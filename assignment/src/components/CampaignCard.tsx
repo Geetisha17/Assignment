@@ -1,22 +1,12 @@
-import React from "react";
-import { useNavigate } from "react-router-dom";
 import { Campaign } from "../types/type";
+import { useNavigateLink } from "../hooks/useNavigateLink";
 
 type Props = {
   campaign: Campaign;
 };
 
 function CampaignCard({ campaign }: Props) {
-  const navigate = useNavigate();
-
-  const showDetails = () => {
-    navigate(`/campaign/${campaign.id}`);
-  };
-
-  const showInsights = () => {
-    navigate(`/campaign/${campaign.id}/insights`);
-  };
-
+  const { showDetails, showInsights } = useNavigateLink({ campaign });
   return (
     <div
       className="
@@ -25,9 +15,7 @@ function CampaignCard({ campaign }: Props) {
       "
     >
       <div>
-        <h3 className="text-xl font-semibold mb-4">
-          {campaign.name}
-        </h3>
+        <h3 className="text-xl font-semibold mb-4">{campaign.name}</h3>
 
         <div className="text-sm space-y-2 text-gray-300">
           <p>

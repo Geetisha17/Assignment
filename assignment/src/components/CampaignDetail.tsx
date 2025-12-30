@@ -1,30 +1,9 @@
-import axios from "axios";
-import React, { useEffect, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
-import { Campaign } from "../types/type";
-
-const BASE_URL = process.env.REACT_APP_API_BASE_URL;
+import { useFetchCampaignId } from "../hooks/useFetchCampaignId";
+import { useNavigate } from "react-router-dom";
 
 function CampaignDetail() {
-  const { id } = useParams<{ id: string }>();
+  const {campaign, loading} = useFetchCampaignId();
   const navigate = useNavigate();
-  const [campaign, setCampaign] = useState<Campaign | null>(null);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const fetchCampaignDetails = async () => {
-      try {
-        const res = await axios.get(`${BASE_URL}/campaigns/${id}`);
-        setCampaign(res.data.campaign);
-      } catch (error) {
-        console.error(error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchCampaignDetails();
-  }, [id]);
 
   if (loading)
     return (
@@ -43,11 +22,8 @@ function CampaignDetail() {
   return (
     <div className="bg-gray-950 min-h-screen flex items-center justify-center p-6">
       <div className="w-full max-w-4xl mx-auto bg-gray-900 rounded-xl p-6">
-        {/* Header */}
         <div className="flex items-center justify-between mb-5">
-          <h3 className="text-2xl font-semibold text-white">
-            {campaign.name}
-          </h3>
+          <h3 className="text-2xl font-semibold text-white">{campaign.name}</h3>
           <button
             onClick={() => navigate(-1)}
             className="text-sm text-blue-400 hover:underline"
@@ -56,15 +32,11 @@ function CampaignDetail() {
           </button>
         </div>
 
-        {/* Details */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <Detail label="Status" value={campaign.status} />
           <Detail label="Budget" value={`$${campaign.budget}`} />
           <Detail label="Daily Budget" value={`$${campaign.daily_budget}`} />
-          <Detail
-            label="Platforms"
-            value={campaign.platforms.join(", ")}
-          />
+          <Detail label="Platforms" value={campaign.platforms.join(", ")} />
         </div>
       </div>
     </div>

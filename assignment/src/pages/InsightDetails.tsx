@@ -1,6 +1,4 @@
-import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
-import {RealtimeInsight} from '../types/type';
+import { useFetchRealtime } from "../hooks/useFetchRealtime";
 import {
   LineChart,
   Line,
@@ -11,36 +9,8 @@ import {
   CartesianGrid,
 } from "recharts";
 
-const BASE_URL = process.env.REACT_APP_API_BASE_URL;
-
 const InsightDetails = () => {
-  const { id } = useParams<{id:string}>();
-  const [realtimeData, setRealtimeData] = useState<RealtimeInsight[]>([]);
-  const [latest, setLatest] = useState<RealtimeInsight | null>(null);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const eventSource = new EventSource(
-      `${BASE_URL}/campaigns/${id}/insights/stream`
-    );
-
-    eventSource.onmessage = (event) => {
-      const newData: RealtimeInsight = JSON.parse(event.data);
-      setRealtimeData((prev) => [...prev.slice(-19), newData]);
-      setLatest(newData);
-      setLoading(false);
-    };
-
-    eventSource.onerror = () => {
-      console.error("SSE connection error");
-      eventSource.close();
-    };
-
-    return () => {
-      eventSource.close();
-    };
-  }, [id]);
-
+  const { realtimeData, latest, loading } = useFetchRealtime();
   if (loading)
     return (
       <div className="flex items-center justify-center h-64">
@@ -63,7 +33,10 @@ const InsightDetails = () => {
     <div className="p-6 space-y-8">
       <h2 className="text-4xl font-bold text-black text-center mb-6 flex items-center justify-center gap-3">
         Campaign Insights
-        <span className="w-3 h-3 bg-green-500 rounded-full animate-pulse" title="Live"></span>
+        <span
+          className="w-3 h-3 bg-green-500 rounded-full animate-pulse"
+          title="Live"
+        ></span>
       </h2>
 
       <div className="bg-gray-900 rounded-2xl shadow-lg p-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -154,3 +127,4 @@ const Metric = ({ label, value }: MetricProps) => (
 );
 
 export default InsightDetails;
+
