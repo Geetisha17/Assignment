@@ -20,10 +20,10 @@ function CampaignDetail() {
     );
 
   return (
-    <div className="bg-gray-950 min-h-screen flex items-center justify-center p-6">
-      <div className="w-full max-w-4xl mx-auto bg-gray-900 rounded-xl p-6">
+    <div className="bg-gray-950 min-h-screen flex flex-col items-center justify-center p-6">
+      <h1 className="text-4xl font-bold text-white mb-4 mt-4">{campaign.name}</h1>
+      <div className="w-full max-w-4xl mx-auto bg-gray-900 rounded-xl mt-5 p-6">
         <div className="flex items-center justify-between mb-5">
-          <h3 className="text-2xl font-semibold text-white">{campaign.name}</h3>
           <button
             onClick={() => navigate(-1)}
             className="text-sm text-blue-400 hover:underline"
